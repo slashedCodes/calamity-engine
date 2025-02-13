@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(sdl2-image)
 
-add_executable(${PROJECT_NAME} engine.cpp main.cpp)
+add_executable(${PROJECT_NAME} engine.cpp main.cpp audio.cpp input.cpp)
 
 include(FindPkgConfig)
 pkg_search_module(SDL2 REQUIRED sdl2)

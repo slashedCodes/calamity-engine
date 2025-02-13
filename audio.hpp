@@ -2,7 +2,7 @@
 #define AUDIO_H
 
 #include <SDL2/SDL_mixer.h>
-#include <math.h>
+#include "engine.hpp"
 
 class sound {
     public:
@@ -43,6 +43,6 @@ class sound_listener {
 
 extern sound_listener* global_sound_listener;
 
-std::list<sound_2d*> &get_2d_sounds();
+std::list<sound_2d*> &get_sounds_2d();
 
 #endif

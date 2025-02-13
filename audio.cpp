@@ -9,7 +9,7 @@ sound_listener::sound_listener(float x, float y)
 {
     this->x = x;
     this->y = y;
-    if(sound_listener != nullptr) {
+    if(global_sound_listener != nullptr) {
         std::cerr << "Warning: Multiple sound listeners detected. Only one sound listener is supported." << std::endl;
         return;
     }
@@ -23,7 +23,7 @@ void sound_listener::change_position(float x, float y)
     this->y = y;
 
     // Calculate volume for all 2D sounds
-    for(sound_2d* sound_it : get_2d_sounds())
+    for(sound_2d* sound_it : get_sounds_2d())
     {
         float distance = sqrt(pow(sound_it->x - this->x, 2) + pow(sound_it->y - this->y, 2));
         float volume = 1 - distance / 100;
@@ -68,13 +68,13 @@ void sound::resume()
 
 // 2D sound emitter
 
-std::list<sound_2d*> &get_2d_sounds()
+std::list<sound_2d*> &get_sounds_2d()
 {
-    static std::list<sound_2d*> 2d_sounds;
-    return 2d_sounds;
+    static std::list<sound_2d*> sounds_2d;
+    return sounds_2d;
 }
 
-sound_2d::sound(std::string path, float x, float y)
+sound_2d::sound_2d(std::string path, float x, float y)
 {
     this->path = path;
     this->file = Mix_LoadMUS(path.c_str());
