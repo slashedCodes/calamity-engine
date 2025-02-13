@@ -1,67 +1,62 @@
+#define GAME_UPDATE
+#define GAME_INPUT
+#define GAME_DBG_UPDATE
+#define GAME_START
 #include "engine.hpp"
+#include "input.hpp"
+#include "audio.hpp"
 
-sprite peanits(0, 0, 100, 100, "assets/peanits.png");
-camera cam(0, 0, std::vector<int>{255, 255, 255, 255});
-bool dvd_screensaver_mode = false;
+#include <math.h>
 
-// Called before main loop
+sprite bird(20, 20, 40, 40, "assets/flappy.png");
+sprite ground(0, 260, 480, 100, "assets/ground.png");
+camera cam(0, 0, std::vector<int>{100, 100, 255, 255});
+sound_listener listener(20, 20);
+sound_2d dj_khaled_son("assets/dj_khaled_son.ogg", 100, 100);
+
+float y_velocity = 0;
+float gravity = 5;
+bool draw_debug_outlines = true;
+
 void start()
 {
-    //initialize_sprite(&peanits);
+    dj_khaled_son.play();
 }
-
-int count = 1;
-int peanitsSpeedX = 1;
-int peanitsSpeedY = 1;
 
 // Called before rendering
-void update()
+void update(float delta)
 {
-    peanits.width = get_joystick_axis(SDL_CONTROLLER_AXIS_LEFTX) / 100;
+    // Gravity
+    y_velocity += gravity * delta;
+    bird.y += y_velocity * delta * 100;
 
-    if (is_button_down(SDL_CONTROLLER_BUTTON_A)) {
-        dvd_screensaver_mode = !dvd_screensaver_mode;
-    }
+    // Update listener position
+    listener.change_position(bird.x, bird.y);
+}
 
-    if(dvd_screensaver_mode) {
-        count++;
-        if(count > 20) {
-            count = 1;
-
-            peanits.x += peanitsSpeedX;
-            peanits.y += peanitsSpeedY;
-
-            if(peanits.x + peanits.width > 480 || peanits.x < 0) {
-                peanitsSpeedX = -peanitsSpeedX;
-            }
-            if(peanits.y + peanits.height > 272 || peanits.y < 0) {
-                peanitsSpeedY = -peanitsSpeedY;
-            }
-        }
-    } else {
-        if (is_button_down(SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) {
-            peanits.x++;
-        }
-        if (is_button_down(SDL_CONTROLLER_BUTTON_DPAD_LEFT)) {
-            peanits.x--;
-        }
-        if (is_button_down(SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
-            peanits.y++;
-        }
-        if (is_button_down(SDL_CONTROLLER_BUTTON_DPAD_UP)) {
-            peanits.y--;
-        }
+void input(SDL_Event event)
+{
+    if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+    {
+        y_velocity = -2;
     }
 }
 
-// called after normal update function (for rendering debug shit)
-void debug_update() {
-    draw_rect(peanits.x, peanits.y, peanits.width, 2, std::vector<int>{0, 255, 0, 255});
-    draw_rect(peanits.x, peanits.y, 2, peanits.height, std::vector<int>{0, 255, 0, 255});
-
-    draw_rect(peanits.x, peanits.y, 2, 2, std::vector<int>{255, 0, 0, 255});
+void draw_sprite_outline(sprite *sprite, std::vector<int> color)
+{
+    draw_rect(sprite->x, sprite->y, sprite->width, 2, color);
+    draw_rect(sprite->x, sprite->y, 2, sprite->height, color);
+    draw_rect(sprite->x + sprite->width, sprite->y, 2, sprite->height + 2, color);
+    draw_rect(sprite->x, sprite->y + sprite->height, sprite->width + 2, 2, color);
 }
 
-void input(SDL_Event event) {
-
+void debug_update()
+{
+    if (draw_debug_outlines)
+    {
+        for (auto sprite_it : get_sprites())
+        {
+            draw_sprite_outline(sprite_it, std::vector<int>{255, 0, 0, 255});
+        }
+    }
 }

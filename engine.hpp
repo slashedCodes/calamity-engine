@@ -10,39 +10,40 @@
 #include <vector>
 #include <iterator>
 
-class camera {
-    public:
-        camera(int x, int y, std::vector<int> background_color);
-        int x;
-        int y;
-        std::vector<int> background_color{255, 255, 255, 255};
+class camera
+{
+public:
+    camera(float x, float y, std::vector<int> background_color);
+    float x;
+    float y;
+    std::vector<int> background_color{255, 255, 255, 255};
 };
 
-class sprite {
-    public:
-        sprite(int x, int y, int width, int height, std::string texture_path);
-        void ensure_texture_loaded();
-        int x;
-        int y;
-        int width;
-        int height;
-        std::string texture_path;
-        SDL_Texture* texture;
+class sprite
+{
+public:
+    sprite(float x, float y, int width, int height, std::string texture_path);
+    void ensure_texture_loaded();
+    float x;
+    float y;
+    int width;
+    int height;
+    std::string texture_path;
+    SDL_Texture *texture;
 };
 
-extern camera* global_camera;
-extern std::list<sprite*> sprites;
-extern std::list<SDL_Rect> rects;
+extern camera *global_camera;
 extern std::list<std::string> loaded_textures;
-extern SDL_Renderer* renderer;
+extern SDL_Renderer *renderer;
+extern SDL_Event input_event;
 
-SDL_Texture* load_texture(std::string path);
+std::list<sprite *> &get_sprites();
+std::list<SDL_Rect> &get_rects();
+SDL_Texture *load_texture(std::string path);
 void update_rects();
 void draw_rects();
-bool is_button_down(SDL_GameControllerButton button);
-int get_joystick_axis(SDL_GameControllerAxis axis);
 
 // debug functions
-void draw_rect(int x, int y, int width, int height, std::vector<int> color);
+void draw_rect(float x, float y, int width, int height, std::vector<int> color);
 
 #endif // ENGINE_H
