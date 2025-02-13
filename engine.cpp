@@ -30,6 +30,8 @@ sprite::sprite(int x, int y, int width, int height, std::string texture_path) {
     SDL_Rect sprite_rect = {x, y, width, height};
     rects.push_back(sprite_rect);
     std::cout << "pushed to rects" << std::endl;
+
+    std::cout << "sprite class - Sprites count: " << sprites.size() << ", Rects count: " << rects.size() << std::endl; // reports 1 in both
 }
 
 void sprite::ensure_texture_loaded() {
@@ -57,6 +59,8 @@ int main(int argc, char *argv[])
     std::cout << "renderer created" << std::endl;
 
     start();
+
+    std::cout << "main function - Sprites count: " << sprites.size() << ", Rects count: " << rects.size() << std::endl; // reports 0, what the fuck?
 
     int running = 1;
     while (running)
@@ -129,8 +133,6 @@ void update_rects() {
 }
 
 void draw_rects() {
-    //std::cout << "Sprites count: " << sprites.size() << ", Rects count: " << rects.size() << std::endl; // reports 0, what the fuck
-
     auto sprite_it = sprites.begin();
     auto rect_it = rects.begin();
     while (sprite_it != sprites.end() && rect_it != rects.end()) {

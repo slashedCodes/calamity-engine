@@ -1,6 +1,6 @@
 #include "engine.hpp"
 
-sprite peanits(0, 0, 100, 100, "peanits.png");;
+sprite peanits(0, 0, 100, 100, "assets/peanits.png");
 camera cam(0, 0, std::vector<int>{255, 255, 255, 255});
 bool dvd_screensaver_mode = false;
 
