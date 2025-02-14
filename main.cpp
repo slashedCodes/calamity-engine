@@ -11,8 +11,10 @@
 sprite bird(20, 20, 40, 40, "assets/flappy.png");
 sprite ground(0, 260, 480, 100, "assets/ground.png");
 camera cam(0, 0, std::vector<int>{100, 100, 255, 255});
+
+sprite sound_sprite = sprite(180, 180, 40, 40, "assets/sound.png");
 sound_listener listener(20, 20);
-sound_2d dj_khaled_son("assets/dj_khaled_son.ogg", 100, 100);
+sound_2d sound_emitter("assets/music.ogg", 200, 200);
 
 float y_velocity = 0;
 float gravity = 5;
@@ -20,7 +22,7 @@ bool draw_debug_outlines = true;
 
 void start()
 {
-    dj_khaled_son.play();
+    sound_emitter.play();
 }
 
 // Called before rendering
@@ -32,13 +34,41 @@ void update(float delta)
 
     // Update listener position
     listener.change_position(bird.x, bird.y);
+
+    if(is_button_down(SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) {
+        sound_emitter.x += 1;
+        sound_sprite.x += 1;
+    }
+    if(is_button_down(SDL_CONTROLLER_BUTTON_DPAD_LEFT)) {
+        sound_emitter.x -= 1;
+        sound_sprite.x -= 1;
+    }
+    if(is_button_down(SDL_CONTROLLER_BUTTON_DPAD_UP)) {
+        sound_emitter.y -= 1;
+        sound_sprite.y -= 1;
+    }
+    if(is_button_down(SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
+        sound_emitter.y += 1;
+        sound_sprite.y += 1;
+    }
 }
 
 void input(SDL_Event event)
 {
-    if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
-    {
-        y_velocity = -2;
+    switch(event.cbutton.button) {
+        case SDL_CONTROLLER_BUTTON_X:
+            gravity = 5;
+            break;
+        case SDL_CONTROLLER_BUTTON_Y:
+            draw_debug_outlines = !draw_debug_outlines;
+            break;
+        case SDL_CONTROLLER_BUTTON_B:
+            y_velocity = 0;
+            gravity = 0;
+            break;
+        case SDL_CONTROLLER_BUTTON_A:
+            y_velocity = -2;
+            break;
     }
 }
 

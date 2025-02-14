@@ -11,8 +11,10 @@ class sound {
         void stop();
         void pause();
         void resume();
+        void ensure_sound_loaded();
+        void change_volume(int volume);
 
-        float volume;
+        int volume;
         std::string path;
         Mix_Music* file;
 };
@@ -24,10 +26,12 @@ class sound_2d {
         void stop();
         void pause();
         void resume();
+        void ensure_sound_loaded();
+        void change_volume(int volume);
 
         std::string path;
         Mix_Music* file;
-        float volume;
+        int volume;
         float x;
         float y;
 };
