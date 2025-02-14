@@ -1,6 +1,19 @@
 #include "audio.hpp"
 #include "engine.hpp"
 
+std::vector<bool> channels{false, false, false, false, false, false, false, false};
+
+int find_free_channel()
+{
+    for(int i = 0; i < channels.size(); i++) {
+        if(channels[i] == false) {
+            channels[i] = true;
+            return i;
+        }
+    }
+    return -1;
+}
+
 // Sound listener
 
 sound_listener* global_sound_listener = nullptr;
@@ -42,47 +55,48 @@ void sound_listener::change_position(float x, float y)
 
 // 1D Sound emitter
 
-sound::sound(std::string path)
+sound::sound(std::string path, int loops)
 {
     this->path = path;
-    this->file = Mix_LoadMUS(path.c_str());
-
-    if(!this->file) {
-        std::cerr << "Mix_LoadMUS Error loading audio file: " << this->path << std::endl;
-    }
+    this->file = nullptr;
+    this->channel = -1;
+    this->loops = loops;
 }
 
 void sound::ensure_sound_loaded() {
     if(this->file == nullptr) {
-        this->file = Mix_LoadMUS(this->path.c_str());
+        this->file = Mix_LoadWAV(this->path.c_str());
     }
 }
 
 void sound::change_volume(int volume)
 {
     this->volume = volume;
-    Mix_VolumeMusic(this->volume);
+    Mix_VolumeChunk(this->file, this->volume);
 }
 
 void sound::play()
 {
+    this->channel = find_free_channel();
     this->ensure_sound_loaded();
-    Mix_PlayMusic(this->file, 0);
+    Mix_PlayChannel(this->channel, this->file, this->loops);
 }
 
 void sound::stop()
 {
-    Mix_HaltMusic();
+    channels.at(this->channel) = false;
+    Mix_HaltChannel(this->channel);
+    this->channel = -1;
 }
 
 void sound::pause()
 {
-    Mix_PauseMusic();
+    Mix_Pause(this->channel);
 }
 
 void sound::resume()
 {
-    Mix_ResumeMusic();
+    Mix_Resume(this->channel);
 }
 
 // 2D sound emitter
@@ -93,51 +107,51 @@ std::list<sound_2d*> &get_sounds_2d()
     return sounds_2d;
 }
 
-sound_2d::sound_2d(std::string path, float x, float y)
+sound_2d::sound_2d(std::string path, float x, float y, int loops)
 {
     this->path = path;
     this->file = nullptr;
+    this->loops = loops;
+    this->channel = -1;
 
     this->x = x;
     this->y = y;
-
-    if(!this->file) {
-        std::cerr << "Mix_LoadMUS Error loading audio file: " << this->path << std::endl;
-    }
 
     get_sounds_2d().push_back(this);
 }
 
 void sound_2d::ensure_sound_loaded() {
     if(this->file == nullptr) {
-        this->file = Mix_LoadMUS(this->path.c_str());
+        this->file = Mix_LoadWAV(this->path.c_str());
     }
 }
 
 void sound_2d::change_volume(int volume)
 {
-    std::cout << "Changing volume to " << volume << std::endl;
     this->volume = volume;
-    Mix_VolumeMusic(this->volume);
+    Mix_VolumeChunk(this->file, this->volume);
 }
 
 void sound_2d::play()
 {
+    this->channel = find_free_channel();
     this->ensure_sound_loaded();
-    Mix_PlayMusic(this->file, 1);
+    Mix_PlayChannel(this->channel, this->file, 1);
 }
 
 void sound_2d::stop()
 {
-    Mix_HaltMusic();
+    channels.at(this->channel) = false;
+    Mix_HaltChannel(this->channel);
+    this->channel = -1;
 }
 
 void sound_2d::pause()
 {
-    Mix_PauseMusic();
+    Mix_Pause(this->channel);
 }
 
 void sound_2d::resume()
 {
-    Mix_ResumeMusic();
+    Mix_Resume(this->channel);
 }

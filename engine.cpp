@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO);
     IMG_Init(IMG_INIT_PNG);
 
-    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 2048);
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 8, 2048);
 
     SDL_Window *window = SDL_CreateWindow(
         "window",

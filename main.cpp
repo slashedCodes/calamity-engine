@@ -14,7 +14,7 @@ camera cam(0, 0, std::vector<int>{100, 100, 255, 255});
 
 sprite sound_sprite = sprite(180, 180, 40, 40, "assets/sound.png");
 sound_listener listener(20, 20);
-sound_2d sound_emitter("assets/music.ogg", 200, 200);
+sound_2d sound_emitter("assets/dj_khaled_son.ogg", 200, 200, -1);
 
 float y_velocity = 0;
 float gravity = 5;

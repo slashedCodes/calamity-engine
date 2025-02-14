@@ -6,7 +6,7 @@
 
 class sound {
     public:
-        sound(std::string path);
+        sound(std::string path, int loops);
         void play();
         void stop();
         void pause();
@@ -14,14 +14,16 @@ class sound {
         void ensure_sound_loaded();
         void change_volume(int volume);
 
+        int channel;
+        int loops;
         int volume;
         std::string path;
-        Mix_Music* file;
+        Mix_Chunk* file;
 };
 
 class sound_2d {
     public:
-        sound_2d(std::string path, float x, float y);
+        sound_2d(std::string path, float x, float y, int loops);
         void play();
         void stop();
         void pause();
@@ -30,7 +32,9 @@ class sound_2d {
         void change_volume(int volume);
 
         std::string path;
-        Mix_Music* file;
+        Mix_Chunk* file;
+        int channel;
+        int loops;
         int volume;
         float x;
         float y;
